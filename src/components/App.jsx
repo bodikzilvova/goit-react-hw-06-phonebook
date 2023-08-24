@@ -1,4 +1,3 @@
-
 import { Container } from './Container/Container';
 import { ContactList } from './ContactList/ContactList';
 import { ContactForm } from './ContactForm/ContactForm';
@@ -6,39 +5,35 @@ import { Filter } from './Filter/Filter';
 import { nanoid } from 'nanoid';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { filterReducer, setFilter } from 'redux/filterSlice';
+import { setFilter } from 'redux/filterSlice';
 import { addContact, removeContact } from 'redux/contactsSlice';
 
 export const App = () => {
   const contacts = useSelector(state => state.contacts.contacts);
+
+  const filter = useSelector(state => state.filter);
+
   const dispatch = useDispatch();
 
-  // const [contacts, setContacts] = useState(
-  //   () => JSON.parse(localStorage.getItem('contacts')) || []
-  // );
-  // const [filter, setFilter] = useState('');
-
-  // useEffect(() => {
-  //   localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }, [contacts]);
-
   const handleFormSubmit = ({ name, number }) => {
-    const existingContact = contacts.find(
-      contact => contact.name.toLowerCase() === name.toLowerCase()
-    );
-
-    if (existingContact) {
-      alert(`${name} is already in contacts`);
-    } else {
-      const newContact = {
-        id: nanoid(),
-        name: name,
-        number: number,
-      };
-
-      dispatch(addContact(newContact));
+    if (contacts) {
+      const existingContact = contacts.find(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      );
+  
+      if (existingContact) {
+        alert(`${name} is already in contacts`);
+      } else {
+        const newContact = {
+          id: nanoid(),
+          name: name,
+          number: number,
+        };
+  
+        dispatch(addContact(newContact));
+      }
     }
-  };
+  };;
 
   const handleFilterByName = e => {
     const { value } = e.target;
@@ -49,9 +44,15 @@ export const App = () => {
     dispatch(removeContact(contactId));
   };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filterReducer.toLowerCase())
-  );
+  // const filteredContacts = contacts.filter(contact =>
+  //   contact.name.toLowerCase().includes(filter.toLowerCase())
+  // );
+
+  const filteredContacts = filter
+  ? contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    )
+  : contacts;
 
   return (
     <Container>
