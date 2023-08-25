@@ -8,10 +8,10 @@ import {
 } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
-import { addContact } from 'redux/contactsSlice';
+import { addContact, getContacts } from 'redux/contactsSlice';
 
 export const ContactForm = () => {
-  const contacts = useSelector(state => state.contacts.contacts);
+  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
 
   const [name, setName] = useState('');
@@ -28,7 +28,7 @@ export const ContactForm = () => {
 
   const handleFormSubmit = e => {
     e.preventDefault();
-    if (contacts.length > 0) {
+ 
       const existingContact = contacts.find(
         contact => contact.name.toLowerCase() === name.toLowerCase()
       );
@@ -43,7 +43,9 @@ export const ContactForm = () => {
         };
 
         dispatch(addContact(newContact));
-      }
+
+        setName('');
+      setNumber('');
     }
   };
 
